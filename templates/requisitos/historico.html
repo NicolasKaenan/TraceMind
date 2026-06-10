@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Historico — {{ requisito.codigo }}{% endblock %}
+{% block page_title %}Historico: {{ requisito.codigo }}{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'requisitos:lista' %}" class="btn btn-sm btn-outline-secondary">
+  <i class="bi bi-arrow-left me-1"></i> Voltar
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="table-card">
+  <div class="card-header">
+    <span class="fw-semibold small"><i class="bi bi-clock-history me-1 text-primary"></i> {{ versoes.count }} versao(oes) registrada(s)</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr><th>#</th><th>Data</th><th>Usuario</th><th>Titulo</th><th>Status</th><th>Prioridade</th><th>Tipo</th></tr>
+      </thead>
+      <tbody>
+        {% for v in versoes %}
+        <tr {% if forloop.first %}class="table-success"{% endif %}>
+          <td><span class="badge bg-secondary">v{{ versoes.count|add:"-"|add:forloop.counter0 }}</span></td>
+          <td class="small">{{ v.history_date|date:"d/m/Y H:i" }}</td>
+          <td class="small">{{ v.history_user.username|default:"sistema" }}</td>
+          <td>{{ v.titulo }}</td>
+          <td><span class="badge badge-status-{{ v.status }} rounded-pill">{{ v.get_status_display }}</span></td>
+          <td><span class="badge badge-prio-{{ v.prioridade }} rounded-pill">{{ v.get_prioridade_display }}</span></td>
+          <td class="small text-muted">{{ v.get_tipo_display }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">Nenhum historico encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

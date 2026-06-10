@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard — ReqPlatform{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'requisitos:exportar_json' %}" class="btn btn-sm btn-outline-secondary">
+  <i class="bi bi-download me-1"></i> Exportar JSON
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="border-left-color:#2e86de">
+      <div class="stat-num">{{ total_stakeholders }}</div>
+      <div class="stat-label"><i class="bi bi-people me-1"></i>Stakeholders</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="border-left-color:#27ae60">
+      <div class="stat-num">{{ total_requisitos }}</div>
+      <div class="stat-label"><i class="bi bi-card-checklist me-1"></i>Requisitos</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="border-left-color:#f39c12">
+      <div class="stat-num">{{ total_funcionais }}</div>
+      <div class="stat-label"><i class="bi bi-check2-square me-1"></i>Funcionais</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="border-left-color:#8e44ad">
+      <div class="stat-num">{{ total_nao_funcionais }}</div>
+      <div class="stat-label"><i class="bi bi-sliders me-1"></i>Não Funcionais</div>
+    </div>
+  </div>
+</div>
+
+<!-- Status Summary -->
+<div class="row g-3 mb-4">
+  <div class="col-12">
+    <div class="table-card p-3">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-bar-chart-line me-1 text-primary"></i> Status dos Requisitos</h6>
+      </div>
+      <div class="row g-3">
+        <div class="col-4 text-center">
+          <div class="fw-bold fs-4 text-success">{{ aprovados }}</div>
+          <small class="text-muted">Aprovados</small>
+          <div class="progress mt-1" style="height:4px">
+            <div class="progress-bar bg-success" style="width:{% if total_requisitos %}{% widthratio aprovados total_requisitos 100 %}{% else %}0{% endif %}%"></div>
+          </div>
+        </div>
+        <div class="col-4 text-center">
+          <div class="fw-bold fs-4 text-primary">{{ em_revisao }}</div>
+          <small class="text-muted">Em Revisão</small>
+          <div class="progress mt-1" style="height:4px">
+            <div class="progress-bar bg-primary" style="width:{% if total_requisitos %}{% widthratio em_revisao total_requisitos 100 %}{% else %}0{% endif %}%"></div>
+          </div>
+        </div>
+        <div class="col-4 text-center">
+          <div class="fw-bold fs-4 text-warning">{{ rascunho }}</div>
+          <small class="text-muted">Rascunho</small>
+          <div class="progress mt-1" style="height:4px">
+            <div class="progress-bar bg-warning" style="width:{% if total_requisitos %}{% widthratio rascunho total_requisitos 100 %}{% else %}0{% endif %}%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tables Row -->
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="table-card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold small"><i class="bi bi-card-checklist me-1 text-primary"></i> Últimos Requisitos</span>
+        <a href="{% url 'requisitos:lista' %}" class="btn btn-sm btn-outline-primary">Ver todos</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead><tr><th>Código</th><th>Título</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for r in ultimos_requisitos %}
+            <tr>
+              <td><code>{{ r.codigo }}</code></td>
+              <td class="text-truncate" style="max-width:180px">{{ r.titulo }}</td>
+              <td><span class="badge badge-status-{{ r.status }} rounded-pill">{{ r.get_status_display }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center text-muted py-3 small">Nenhum requisito cadastrado</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="table-card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold small"><i class="bi bi-people me-1 text-primary"></i> Últimos Stakeholders</span>
+        <a href="{% url 'stakeholders:lista' %}" class="btn btn-sm btn-outline-primary">Ver todos</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead><tr><th>Nome</th><th>Papel</th><th>Responsabilidade</th></tr></thead>
+          <tbody>
+            {% for s in ultimos_stakeholders %}
+            <tr>
+              <td>{{ s.nome }}</td>
+              <td class="small text-muted">{{ s.get_papel_display }}</td>
+              <td>
+                <span class="badge badge-prio-{{ s.responsabilidade }} rounded-pill">{{ s.get_responsabilidade_display }}</span>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center text-muted py-3 small">Nenhum stakeholder cadastrado</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

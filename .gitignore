@@ -1,0 +1,39 @@
+# Ambiente virtual
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+staticfiles/
+media/
+
+# Ambiente
+.env
+
+# Banco
+*.sql
+*.dump
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Migrations (opcional — remova se quiser versionar)
+# */migrations/
+
+# Zip / builds
+*.zip
+*.tar.gz

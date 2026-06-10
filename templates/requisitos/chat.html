@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title %}Chat — {{ requisito.codigo }}{% endblock %}
+{% block page_title %}Chat: {{ requisito.codigo }} — {{ requisito.titulo }}{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'requisitos:lista' %}" class="btn btn-sm btn-outline-secondary">
+  <i class="bi bi-arrow-left me-1"></i> Voltar
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-3">
+    <div class="table-card p-3">
+      <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-1 text-primary"></i> Requisito</h6>
+      <div class="mb-1"><span class="badge badge-status-{{ requisito.status }} rounded-pill">{{ requisito.get_status_display }}</span></div>
+      <div class="mb-1"><span class="badge badge-prio-{{ requisito.prioridade }} rounded-pill">{{ requisito.get_prioridade_display }}</span></div>
+      <p class="small text-muted mt-2">{{ requisito.descricao|truncatewords:30 }}</p>
+      <a href="{% url 'requisitos:historico' requisito.pk %}" class="btn btn-sm btn-outline-primary w-100 mt-1">
+        <i class="bi bi-clock-history me-1"></i> Ver Historico
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg-9">
+    <div class="table-card d-flex flex-column" style="height: 520px;">
+      <div class="card-header">
+        <span class="fw-semibold small"><i class="bi bi-chat-dots me-1 text-primary"></i> Discussao colaborativa</span>
+        <span class="badge bg-success ms-2 small">Ao vivo</span>
+      </div>
+
+      <div id="chat-box" class="flex-grow-1 overflow-auto p-3" style="background:#f8fafc;">
+        {% for m in mensagens %}
+        {% if m.usuario == request.user %}
+        <div class="d-flex mb-3 justify-content-end" id="msg-{{ m.id }}">
+          <div class="bg-primary text-white rounded-3 p-2 px-3 shadow-sm" style="max-width:75%;">
+            <div class="small fw-bold text-white-50 mb-1">{{ m.usuario.username }}</div>
+            <div>{{ m.mensagem }}</div>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              <small class="text-white-50">{{ m.data|date:"d/m H:i" }}</small>
+              <button class="btn btn-sm p-0 border-0 like-btn text-white-50" data-id="{{ m.id }}">
+                <i class="bi bi-heart{% if request.user in m.likes.all %}-fill text-danger{% endif %}"></i>
+                <span class="like-count">{{ m.total_likes }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="d-flex mb-3" id="msg-{{ m.id }}">
+          <div class="bg-white border rounded-3 p-2 px-3 shadow-sm" style="max-width:75%;">
+            <div class="small fw-bold text-primary mb-1">{{ m.usuario.username }}</div>
+            <div>{{ m.mensagem }}</div>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              <small class="text-muted">{{ m.data|date:"d/m H:i" }}</small>
+              <button class="btn btn-sm p-0 border-0 like-btn text-muted" data-id="{{ m.id }}">
+                <i class="bi bi-heart{% if request.user in m.likes.all %}-fill text-danger{% endif %}"></i>
+                <span class="like-count">{{ m.total_likes }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% empty %}
+        <div class="text-center text-muted py-5" id="empty-msg">
+          <i class="bi bi-chat-dots fs-2 opacity-25 d-block mb-2"></i>
+          Nenhuma mensagem ainda. Comece a discussao!
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="p-3 border-top bg-white">
+        <form id="chat-form" class="d-flex gap-2">
+          {% csrf_token %}
+          <input type="text" id="chat-input" class="form-control form-control-sm"
+                 placeholder="Digite sua mensagem..." autocomplete="off">
+          <button type="submit" class="btn btn-primary btn-sm px-3">
+            <i class="bi bi-send"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const REQUISITO_ID = {{ requisito.pk }};
+const CSRF_TOKEN = '{{ csrf_token }}';
+let lastId = {{ mensagens.last.id|default:0 }};
+
+function scrollBottom() {
+  const box = document.getElementById('chat-box');
+  box.scrollTop = box.scrollHeight;
+}
+
+function renderMsg(m) {
+  const empty = document.getElementById('empty-msg');
+  if (empty) empty.remove();
+
+  const wrapper = document.createElement('div');
+  wrapper.className = `d-flex mb-3 ${m.proprio ? 'justify-content-end' : ''}`;
+  wrapper.id = `msg-${m.id}`;
+
+  const bubble = document.createElement('div');
+  bubble.className = m.proprio
+    ? 'bg-primary text-white rounded-3 p-2 px-3 shadow-sm'
+    : 'bg-white border rounded-3 p-2 px-3 shadow-sm';
+  bubble.style.maxWidth = '75%';
+  bubble.innerHTML = `
+    <div class="small fw-bold ${m.proprio ? 'text-white-50' : 'text-primary'} mb-1">${m.usuario}</div>
+    <div>${m.mensagem}</div>
+    <div class="d-flex align-items-center gap-2 mt-1">
+      <small class="${m.proprio ? 'text-white-50' : 'text-muted'}">${m.data}</small>
+      <button class="btn btn-sm p-0 border-0 like-btn ${m.proprio ? 'text-white-50' : 'text-muted'}"
+              data-id="${m.id}">
+        <i class="bi bi-heart"></i> <span class="like-count">0</span>
+      </button>
+    </div>`;
+  wrapper.appendChild(bubble);
+  document.getElementById('chat-box').appendChild(wrapper);
+  bindLike(wrapper.querySelector('.like-btn'));
+  scrollBottom();
+}
+
+function bindLike(btn) {
+  btn.addEventListener('click', function() {
+    const id = this.dataset.id;
+    fetch(`/requisitos/mensagem/${id}/like/`, {
+      method: 'POST',
+      headers: {'X-CSRFToken': CSRF_TOKEN},
+    })
+    .then(r => r.json())
+    .then(data => {
+      this.querySelector('.like-count').textContent = data.total_likes;
+      this.querySelector('i').className = data.liked ? 'bi bi-heart-fill text-danger' : 'bi bi-heart';
+    });
+  });
+}
+
+document.querySelectorAll('.like-btn').forEach(bindLike);
+scrollBottom();
+
+document.getElementById('chat-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  fetch(`/requisitos/${REQUISITO_ID}/chat/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': CSRF_TOKEN,
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+    body: `mensagem=${encodeURIComponent(text)}`,
+  })
+  .then(r => r.json())
+  .then(data => {
+    data.proprio = true;
+    lastId = data.id;
+    renderMsg(data);
+    input.value = '';
+  });
+});
+
+setInterval(() => {
+  fetch(`/requisitos/${REQUISITO_ID}/chat/buscar/?since=${lastId}`)
+  .then(r => r.json())
+  .then(data => {
+    data.mensagens.forEach(m => {
+      if (!document.getElementById(`msg-${m.id}`)) {
+        lastId = m.id;
+        renderMsg(m);
+      }
+    });
+  });
+}, 8000);
+</script>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Requisitos — TraceMind{% endblock %}
+{% block page_title %}Requisitos{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'requisitos:matriz' %}" class="btn btn-sm btn-outline-secondary me-1">
+  <i class="bi bi-grid-3x3-gap me-1"></i> Matriz
+</a>
+<a href="{% url 'requisitos:criar' %}" class="btn btn-sm btn-primary">
+  <i class="bi bi-plus-lg me-1"></i> Novo Requisito
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="table-card p-3 mb-3">
+  <form method="get" class="row g-2 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label fw-semibold small mb-1">Tipo</label>
+      <select name="tipo" class="form-select form-select-sm">
+        <option value="">Todos os tipos</option>
+        <option value="funcional" {% if tipo_filtro == 'funcional' %}selected{% endif %}>Funcional</option>
+        <option value="nao_funcional" {% if tipo_filtro == 'nao_funcional' %}selected{% endif %}>Nao Funcional</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-semibold small mb-1">Status</label>
+      <select name="status" class="form-select form-select-sm">
+        <option value="">Todos os status</option>
+        <option value="rascunho" {% if status_filtro == 'rascunho' %}selected{% endif %}>Rascunho</option>
+        <option value="em_revisao" {% if status_filtro == 'em_revisao' %}selected{% endif %}>Em Revisao</option>
+        <option value="aprovado" {% if status_filtro == 'aprovado' %}selected{% endif %}>Aprovado</option>
+        <option value="rejeitado" {% if status_filtro == 'rejeitado' %}selected{% endif %}>Rejeitado</option>
+      </select>
+    </div>
+    <div class="col-md-4 d-flex gap-2">
+      <button type="submit" class="btn btn-sm btn-primary">Filtrar</button>
+      <a href="{% url 'requisitos:lista' %}" class="btn btn-sm btn-outline-secondary">Limpar</a>
+    </div>
+  </form>
+</div>
+
+<div class="table-card">
+  <div class="card-header">
+    <span class="fw-semibold small"><i class="bi bi-card-checklist me-1 text-primary"></i> {{ requisitos.count }} requisito(s)</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr><th>Codigo</th><th>Titulo</th><th>Tipo</th><th>Prioridade</th><th>Status</th><th>Criado por</th><th class="text-end">Acoes</th></tr>
+      </thead>
+      <tbody>
+        {% for r in requisitos %}
+        <tr>
+          <td><code class="text-primary fw-bold">{{ r.codigo }}</code></td>
+          <td>{{ r.titulo }}</td>
+          <td>
+            {% if r.tipo == 'funcional' %}
+              <span class="badge bg-primary bg-opacity-10 text-primary">Funcional</span>
+            {% else %}
+              <span class="badge bg-secondary bg-opacity-10 text-secondary">Nao Funcional</span>
+            {% endif %}
+          </td>
+          <td><span class="badge badge-prio-{{ r.prioridade }} rounded-pill">{{ r.get_prioridade_display }}</span></td>
+          <td><span class="badge badge-status-{{ r.status }} rounded-pill">{{ r.get_status_display }}</span></td>
+          <td class="small text-muted">{{ r.criado_por.username|default:"—" }}</td>
+          <td class="text-end">
+            <a href="{% url 'requisitos:chat' r.pk %}" class="btn btn-sm btn-outline-info me-1" title="Chat">
+              <i class="bi bi-chat-dots"></i>
+            </a>
+            <a href="{% url 'requisitos:historico' r.pk %}" class="btn btn-sm btn-outline-warning me-1" title="Historico">
+              <i class="bi bi-clock-history"></i>
+            </a>
+            <a href="{% url 'requisitos:editar' r.pk %}" class="btn btn-sm btn-outline-secondary me-1">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'requisitos:excluir' r.pk %}" class="btn btn-sm btn-outline-danger">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center text-muted py-5">
+            <i class="bi bi-card-checklist fs-2 d-block mb-2 opacity-25"></i>
+            Nenhum requisito cadastrado.<br>
+            <a href="{% url 'requisitos:criar' %}" class="btn btn-primary btn-sm mt-3">
+              <i class="bi bi-plus-lg me-1"></i> Criar primeiro requisito
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

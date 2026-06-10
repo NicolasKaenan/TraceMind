@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Stakeholders — ReqPlatform{% endblock %}
+{% block page_title %}Stakeholders{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'stakeholders:criar' %}" class="btn btn-sm btn-primary">
+  <i class="bi bi-plus-lg me-1"></i> Novo Stakeholder
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="table-card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span class="fw-semibold small"><i class="bi bi-people me-1 text-primary"></i> {{ stakeholders.count }} stakeholder(s) cadastrado(s)</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Nome</th><th>E-mail</th><th>Papel</th><th>Contato</th><th>Responsabilidade</th><th class="text-end">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in stakeholders %}
+        <tr>
+          <td class="fw-semibold">{{ s.nome }}</td>
+          <td class="text-muted small">{{ s.email }}</td>
+          <td><span class="badge bg-light text-dark border">{{ s.get_papel_display }}</span></td>
+          <td class="small">{{ s.contato|default:"—" }}</td>
+          <td><span class="badge badge-prio-{{ s.responsabilidade }} rounded-pill">{{ s.get_responsabilidade_display }}</span></td>
+          <td class="text-end">
+            <a href="{% url 'stakeholders:editar' s.pk %}" class="btn btn-sm btn-outline-secondary me-1">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'stakeholders:excluir' s.pk %}" class="btn btn-sm btn-outline-danger">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted py-5">
+            <i class="bi bi-people fs-2 d-block mb-2 opacity-25"></i>
+            Nenhum stakeholder cadastrado ainda.<br>
+            <a href="{% url 'stakeholders:criar' %}" class="btn btn-primary btn-sm mt-3">
+              <i class="bi bi-plus-lg me-1"></i> Cadastrar primeiro stakeholder
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
