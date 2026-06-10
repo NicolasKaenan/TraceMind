@@ -1,4 +1,4 @@
-\# TraceMind — Plataforma Colaborativa de Requisitos
+# TraceMind — Plataforma Colaborativa de Requisitos
 
 
 
@@ -8,11 +8,11 @@
 
 
 
-\---
+---
 
 
 
-\## Sobre o Projeto
+## Sobre o Projeto
 
 
 
@@ -20,121 +20,107 @@ O \*\*TraceMind\*\* é uma plataforma web colaborativa desenvolvida para apoiar 
 
 
 
-\---
+---
 
 
 
-\## Equipe
+## Equipe
 
 
 
 | Nome | Função |
-
 |---|---|
-
 | Julio Cezar de Souza Azevedo | Back-end (Django + PostgreSQL) |
-
 | Nicolas Kaenan Silveira | Front-end (Django REST) |
-
 | Thiago Brito Novaes | DevOps (GitHub + CI/CD) |
-
 | Vitor Henrik Lopes | Segurança (OAuth 2.0) |
-
 | Yuri de Almeida Lima | Full-stack (Python avançado) |
 
 
 
-\---
+---
 
 
 
-\## Stack Tecnológica
+## Stack Tecnológica
 
 
 
 | Tecnologia | Uso |
-
 |---|---|
-
 | Python 3.11 | Linguagem principal |
-
 | Django 5.0.6 | Framework web |
-
 | PostgreSQL 18 | Banco de dados |
-
 | Bootstrap 5 | Interface |
-
 | django-simple-history | Versionamento de requisitos |
-
 | ReportLab | Exportação PDF |
-
 | python-docx | Exportação DOCX |
 
 
 
-\---
+---
 
 
 
-\## Funcionalidades
+## Funcionalidades
 
 
 
-\### MVP Implementado
+### MVP Implementado
 
-\- Login com autenticação Django nativa
+- Login com autenticação Django nativa
 
-\- Dashboard com métricas e status dos requisitos
+- Dashboard com métricas e status dos requisitos
 
-\- CRUD completo de Stakeholders
+- CRUD completo de Stakeholders
 
-\- CRUD completo de Requisitos com filtros por tipo e status
+- CRUD completo de Requisitos com filtros por tipo e status
 
-\- Versionamento de requisitos com histórico de alterações
+- Versionamento de requisitos com histórico de alterações
 
-\- Chat colaborativo por requisito com sistema de likes
+- Chat colaborativo por requisito com sistema de likes
 
-\- Matriz de Rastreabilidade (Requisitos x Stakeholders)
+- Matriz de Rastreabilidade (Requisitos x Stakeholders)
 
-\- Exportação em JSON, PDF, DOCX e Markdown
+- Exportação em JSON, PDF, DOCX e Markdown
 
-\- Django Admin configurado e personalizado
-
-
-
-\### Features Futuras
-
-\- OAuth2 com Google
-
-\- Upload de imagens e documentos
-
-\- Edição simultânea com WebSockets (Django Channels)
-
-\- Integração com GitHub, Jira e Trello
-
-\- Módulo de IA para sugestão de requisitos
+- Django Admin configurado e personalizado
 
 
 
-\---
+### Features Futuras
+
+- OAuth2 com Google
+
+- Upload de imagens e documentos
+
+- Edição simultânea com WebSockets (Django Channels)
+
+- Integração com GitHub, Jira e Trello
+
+- Módulo de IA para sugestão de requisitos
 
 
 
-\## Instalação e Configuração
+---
 
 
 
-\### Pré-requisitos
-
-\- Python 3.11+
-
-\- PostgreSQL 14+
-
-\- Git
+## Instalação e Configuração
 
 
 
-\### 1. Clonar o repositório
+### Pré-requisitos
+
+- Python 3.11+
+
+- PostgreSQL 14+
+
+- Git
+
+
+
+### 1. Clonar o repositório
 
 
 
@@ -148,7 +134,7 @@ cd tracemind
 
 
 
-\### 2. Criar e ativar o ambiente virtual
+### 2. Criar e ativar o ambiente virtual
 
 
 
@@ -158,13 +144,13 @@ python -m venv venv
 
 
 
-\# Windows
+# Windows
 
 venv\\Scripts\\activate
 
 
 
-\# Linux/Mac
+# Linux/Mac
 
 source venv/bin/activate
 
@@ -172,7 +158,7 @@ source venv/bin/activate
 
 
 
-\### 3. Instalar dependências
+### 3. Instalar dependências
 
 
 
@@ -184,7 +170,7 @@ pip install -r requirements.txt
 
 
 
-\### 4. Configurar o banco de dados
+### 4. Configurar o banco de dados
 
 
 
@@ -208,7 +194,7 @@ CREATE DATABASE reqplatform\_db
 
 
 
-\### 5. Criar o arquivo `.env`
+### 5. Criar o arquivo `.env`
 
 
 
@@ -236,7 +222,7 @@ DB\_PORT=5432
 
 
 
-\### 6. Aplicar migrações
+### 6. Aplicar migrações
 
 
 
@@ -252,7 +238,7 @@ python manage.py migrate
 
 
 
-\### 7. Popular dados de demonstração
+### 7. Popular dados de demonstração
 
 
 
@@ -266,7 +252,7 @@ python manage.py shell < seed\_demo.py
 
 
 
-\### 8. Iniciar o servidor
+### 8. Iniciar o servidor
 
 
 
@@ -278,83 +264,63 @@ python manage.py runserver
 
 
 
-Acesse: \[http://localhost:8000](http://localhost:8000)
+Acesse: [http://localhost:8000](http://localhost:8000)
 
 
 
-\---
+---
 
 
 
-\## Credenciais de Acesso
+## Credenciais de Acesso
 
 
 
 | Campo | Valor |
-
 |---|---|
-
 | Usuário | `admin` |
-
 | Senha | `admin123` |
-
-| Admin Django | \[http://localhost:8000/admin/](http://localhost:8000/admin/) |
-
-
-
-\---
+| Admin Django | [http://localhost:8000/admin/](http://localhost:8000/admin/) |
 
 
 
-\## Estrutura do Projeto
+---
+
+
+
+## Estrutura do Projeto
 
 
 
 ```
 
 tracemind/
-
 ├── manage.py
-
 ├── requirements.txt
-
 ├── seed\_demo.py
-
 ├── .env
-
 ├── reqplatform/
-
 │   ├── settings.py
-
 │   ├── urls.py
-
 │   └── wsgi.py
-
 ├── core/               # Dashboard e configurações base
-
 ├── stakeholders/       # CRUD de Stakeholders e Projetos
-
 ├── requisitos/         # CRUD, Chat, Exportação, Matriz
-
 └── templates/
-
 &#x20;   ├── base.html
-
 &#x20;   ├── core/
-
 &#x20;   ├── stakeholders/
-
 &#x20;   └── requisitos/
 
 ```
 
 
 
-\---
+---
 
 
 
-\## Diagrama de Casos de Uso
+## Diagrama de Casos de Uso
 
 
 
@@ -362,59 +328,54 @@ Os principais atores do sistema são:
 
 
 
-\- \*\*Analista de Requisitos\*\* — gerencia stakeholders, cria e edita requisitos, gera documentação
+- \*\*Analista de Requisitos\*\* — gerencia stakeholders, cria e edita requisitos, gera documentação
 
-\- \*\*Cliente Solicitante\*\* — participa do chat, valida requisitos
+- \*\*Cliente Solicitante\*\* — participa do chat, valida requisitos
 
-\- \*\*Dev/QA\*\* — consulta requisitos e rastreabilidade
+- \*\*Dev/QA\*\* — consulta requisitos e rastreabilidade
 
-\- \*\*PMO\*\* — visualiza dashboards e exporta relatórios
-
-
-
-\---
+- \*\*PMO\*\* — visualiza dashboards e exporta relatórios
 
 
 
-\## Exportações Disponíveis
+---
+
+
+
+## Exportações Disponíveis
 
 
 
 | Formato | Rota |
-
 |---|---|
-
 | JSON | `/requisitos/exportar/json/` |
-
 | PDF | `/requisitos/exportar/pdf/` |
-
 | DOCX | `/requisitos/exportar/docx/` |
-
 | Markdown | `/requisitos/exportar/markdown/` |
 
 
 
-\---
+---
 
 
 
-\## Referências
+## Referências
 
 
 
-\- SOMMERVILLE, Ian. \*Engenharia de Software\*. 10. ed. Pearson, 2018.
+- SOMMERVILLE, Ian. \*Engenharia de Software\*. 10. ed. Pearson, 2018.
 
-\- PRESSMAN, Roger S.; MAXIM, Bruce R. \*Engenharia de Software: Uma Abordagem Profissional\*. 8. ed. AMGH, 2016.
+- PRESSMAN, Roger S.; MAXIM, Bruce R. \*Engenharia de Software: Uma Abordagem Profissional\*. 8. ed. AMGH, 2016.
 
-\- WIEGERS, Karl E.; BEATTY, Joy. \*Software Requirements\*. 3. ed. Microsoft Press, 2013.
+- WIEGERS, Karl E.; BEATTY, Joy. \*Software Requirements\*. 3. ed. Microsoft Press, 2013.
 
-\- \[Django Documentation](https://docs.djangoproject.com/)
+- [Django Documentation](https://docs.djangoproject.com/)
 
-\- \[PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
 
 
-\---
+---
 
 
 
